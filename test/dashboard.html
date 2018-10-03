@@ -24,7 +24,9 @@
     <script src="assets/javascripts/OrbitControls.js" type="text/javascript"></script>
     <script src="assets/javascripts/stat.min.js" type="text/javascript"></script>
     <script src="assets/javascripts/TransformControls.js" type="text/javascript"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="assets/javascripts/plotly-latest.min.js" type="text/javascript"></script>
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 
 
 </head>
@@ -155,7 +157,7 @@
 
             <div id='graph1' class='panel panel-default'>
                 <div class='panel-heading'>
-                    <i class='icon-star icon-large'></i> Brain's Slice
+                    <i class='icon-star icon-large'></i> Brain's Network
                     <div class='panel-tools'>
                         <div class='btn-group'>
                             <a class='btn' href='#'>
@@ -166,7 +168,7 @@
                     </div>
                 </div>
                 <div class='panel-body'>
-                    <svg id='network' width="980" height="980"></svg>
+                    <svg id='network' width="880" height="500"></svg>
                 </div>
             </div>
 
@@ -183,7 +185,7 @@
                     </div>
                 </div>
                 <div class='panel-body'>
-                    <div id='slice'></div>
+                    <div id='sliceGraph'></div>
                 </div>
             </div>
         </div>
@@ -202,9 +204,9 @@
         showHelpers: true
     };
     var clipPlanes = [
-        new THREE.Plane(new THREE.Vector3(1, 0, 0), 2.5),
+        new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
         new THREE.Plane(new THREE.Vector3(1, 0, 0), 0),
-        new THREE.Plane(new THREE.Vector3(1, 0, 0), -2.5)
+        new THREE.Plane(new THREE.Vector3(0, 0, 1), 0)
     ];
 
 
@@ -251,8 +253,8 @@
         // helpers
         var helpers = new THREE.Group();
         helpers.add(new THREE.AxesHelper(20));
-        helpers.add(new THREE.PlaneHelper(clipPlanes[0], 30, 0xff0000));
-        helpers.add(new THREE.PlaneHelper(clipPlanes[1], 30, 0x00ff00));
+        helpers.add(new THREE.PlaneHelper(clipPlanes[0], 30, 0x00ff00));
+        helpers.add(new THREE.PlaneHelper(clipPlanes[1], 30, 0xff0000));
         helpers.add(new THREE.PlaneHelper(clipPlanes[2], 30, 0x0000ff));
         helpers.visible = true;
         scene.add(helpers);
@@ -323,214 +325,214 @@
 </script>
 
 <script>
-    var width = 0.435 * window.innerWidth;
-    var height = 0.362 * window.innerHeight;
+    var trace1 = {
+        x: [],
+        y: [],
+        mode: 'markers+lines',
+        type: 'scatter',
+        name: 'Group A',
+        // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
+        textposition: 'top center',
+        textfont: {
+            family: 'Raleway, sans-serif'
+        },
+        marker: {
+            size: 12
+        }
+    };
 
-    function getSlice(width, height, elementId, filepath) {
-        const margin = {
-            top: 25,
-            right: 25,
-            bottom: 25,
-            left: 25
-        };
-        const xScale = d3.scaleLinear()
-            .range([0, width - margin.left - margin.right])
-        const yScale = d3.scaleLinear()
-            .range([height - margin.top - margin.bottom, 0])
-        // const xAxis = d3.axisBottom()
-        //     .scale(xScale)
-        //     // .ticks(50)
-        //     // .tickSize(-(height - margin.top - margin.bottom))
-        //     // .tickFormat('')
-        // const yAxis = d3.axisLeft()
-        //     .scale(yScale)
-        // .ticks(50)
-        // .tickSize(-(width - margin.left - margin.right))
-        // .tickFormat('')
+    var trace2 = {
+        x: [],
+        y: [],
+        mode: 'markers+lines',
+        type: 'scatter',
+        name: 'Group B',
+        // text: ['B-a', 'B-b', 'B-c', 'B-d', 'B-e'],
+        textfont: {
+            family: 'Raleway, sans-serif'
+        },
+        textposition: 'top center',
+        marker: {
+            size: 12
+        }
+    };
 
-        const svg = d3.select(document.getElementById(elementId)).append('svg')
-            .attr('width', width)
-            .attr('height', height)
-        // image graph
-        svg.append('svg:image')
-            .attr('xlink:href', filepath)
-            .attr('x', margin.left)
-            .attr('y', margin.top)
-            .attr('width', width - margin.left - margin.right)
-            .attr('height', height - margin.top - margin.bottom)
-        svg.append('g')
-            .attr('transform', `translate(${margin.left}, ${height-margin.bottom})`)
-            .attr('class', 'x axis')
-        // .call(xAxis)
-        svg.append('g')
-            .attr('transform', `translate(${margin.left}, ${margin.top})`)
-            .attr('class', 'y axis')
-        // .call(yAxis)
+    var trace3 = {
+        x: [],
+        y: [],
+        mode: 'markers+lines',
+        type: 'scatter',
+        name: 'Group C',
+        // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
+        textposition: 'top center',
+        textfont: {
+            family: 'Raleway, sans-serif'
+        },
+        marker: {
+            size: 12
+        }
+    };
+
+    var trace4 = {
+        x: [],
+        y: [],
+        mode: 'markers+lines',
+        type: 'scatter',
+        name: 'Group D',
+        // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
+        textposition: 'top center',
+        textfont: {
+            family: 'Raleway, sans-serif'
+        },
+        marker: {
+            size: 12
+        }
+    };
+
+    var trace5 = {
+        x: [],
+        y: [],
+        mode: 'markers+lines',
+        type: 'scatter',
+        name: 'Group E',
+        // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
+        textposition: 'top center',
+        textfont: {
+            family: 'Raleway, sans-serif'
+        },
+        marker: {
+            size: 12
+        }
+    };
+    for (var i = 0; i < 15; i++) {
+        trace1.x[i] = 10 * Math.random();
+        trace1.y[i] = 10 * Math.random();
+        trace2.x[i] = 10 * Math.random();
+        trace2.y[i] = 10 * Math.random();
+        trace3.x[i] = 10 * Math.random();
+        trace3.y[i] = 10 * Math.random();
+        trace4.x[i] = 10 * Math.random();
+        trace4.y[i] = 10 * Math.random();
+        trace5.x[i] = 10 * Math.random();
+        trace5.y[i] = 10 * Math.random();
     }
+    var data = [trace1, trace2, trace3, trace4, trace5];
 
-    getSlice(width, height, 'slice', 'static/images/slice.jpg');
+
+    var layout = {
+        autosize: true,
+        images: [{
+            "source": "static/images/photo2.jpg",
+            "xref": "x",
+            "yref": "y",
+            "x": 0,
+            "y": 10,
+            "sizex": 10,
+            "sizey": 10,
+            "sizing": "stretch",
+            "opacity": 1,
+            "layer": "below"
+
+        }],
+        margin: {
+            r: 10,
+            t: 20,
+            b: 0,
+            l: 10
+        },
+        xaxis: {
+            autotick: false,
+            showgrid: true,
+            gridwidth: 1,
+            showticklabels: false,
+        },
+        yaxis: {
+            autotick: false,
+            gridwidth: 1,
+            showgrid: true,
+            showticklabels: false,
+        }
+    };
+
+    Plotly.plot('sliceGraph', data, layout);
 </script>
 
 <script>
-    var signForselect = 0;
-    var dataset = {
-        nodes: [{
-                name: 1
-            },
-            {
-                name: 1
-            },
-            {
-                name: 2
-            },
-            {
-                name: 3
-            },
-            {
-                name: 4
-            },
-            {
-                name: 4
-            },
-            {
-                name: 5
-            },
-            {
-                name: 6
-            },
-            {
-                name: 6
-            },
-            {
-                name: 8
-            }
-        ],
-        links: [{
-                source: 0,
-                target: 1
-            },
-            {
-                source: 0,
-                target: 2
-            },
-            {
-                source: 0,
-                target: 3
-            },
-            {
-                source: 0,
-                target: 4
-            },
-            {
-                source: 1,
-                target: 5
-            },
-            {
-                source: 2,
-                target: 5
-            },
-            {
-                source: 2,
-                target: 5
-            },
-            {
-                source: 3,
-                target: 4
-            },
-            {
-                source: 5,
-                target: 8
-            },
-            {
-                source: 5,
-                target: 9
-            },
-            {
-                source: 6,
-                target: 7
-            },
-            {
-                source: 7,
-                target: 8
-            },
-            {
-                source: 8,
-                target: 9
-            }
-        ]
-    };
-
     var svg = d3.select('#network'),
-        width = +svg.attr('width'),
-        height = +svg.attr('height'),
-        colors = d3.scaleOrdinal(d3.schemeCategory10);
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
 
-    var simulation = d3.forceSimulation(dataset.nodes)
-        .force('charge', d3.forceManyBody())
-        .force('link', d3.forceLink(dataset.links))
-        .force('center', d3.forceCenter(width / 2, height / 2));
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-    var link = svg.append('g')
-        .attr('class', 'links')
-        .selectAll('line')
-        .data(dataset.links)
-        .enter().append('line')
-        .attr('stroke', '#ccc')
-        .attr('stroke-width', 1);
+    var simulation = d3.forceSimulation()
+        .force("link", d3.forceLink().id(function(d) {
+            return d.id;
+        }))
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(width / 2, height / 2));
 
-    var node = svg.append('g')
-        .attr('class', 'nodes')
-        .selectAll('circle')
-        .data(dataset.nodes)
-        .enter().append('circle')
-        .attr('r', 10)
-        .attr('fill', function(d, i) {
-            return colors(d.name);
-        })
-        .on("click", click)
-        .on("mouseover", mouseover)
-        .on("mouseout", mouseout)
-        .call(d3.drag()
-            .on('start', dragstarted)
-            .on('drag', dragged)
-            .on('end', dragended));
+    d3.json("static/data/miserables.json", function(error, graph) {
+        if (error) throw error;
 
-    node.append('title')
-        .text(function(d) {
-            return d.name;
-        });
+        var link = svg.append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(graph.links)
+            .enter().append("line")
+            .attr("stroke-width", function(d) {
+                return Math.sqrt(d.value);
+            });
 
-    simulation
-        .nodes(dataset.nodes)
-        .on('tick', ticked);
-
-    simulation.force('link')
-        .links(dataset.links);
-
-    function ticked() {
-        link
-            .attr('x1', function(d) {
-                return d.source.x;
+        var node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(graph.nodes)
+            .enter().append("circle")
+            .attr("r", 5)
+            .attr("fill", function(d) {
+                return color(d.group);
             })
-            .attr('y1', function(d) {
-                return d.source.y;
-            })
-            .attr('x2', function(d) {
-                return d.target.x;
-            })
-            .attr('y2', function(d) {
-                return d.target.y;
-            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
 
-        node
-            .attr('cx', function(d) {
-                return d.x;
-            })
-            .attr('cy', function(d) {
-                return d.y;
-            })
-    }
+        node.append("title")
+            .text(function(d) {
+                return d.id;
+            });
 
+        simulation
+            .nodes(graph.nodes)
+            .on("tick", ticked);
+
+        simulation.force("link")
+            .links(graph.links);
+
+        function ticked() {
+            link
+                .attr("x1", function(d) {
+                    return d.source.x;
+                })
+                .attr("y1", function(d) {
+                    return d.source.y;
+                })
+                .attr("x2", function(d) {
+                    return d.target.x;
+                })
+                .attr("y2", function(d) {
+                    return d.target.y;
+                });
+
+            node
+                .attr("cx", function(d) {
+                    return d.x;
+                })
+                .attr("cy", function(d) {
+                    return d.y;
+                });
+        }
+    });
 
     function dragstarted(d) {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
@@ -547,35 +549,5 @@
         if (!d3.event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
-    }
-
-    function mouseover() {
-        if (signForselect == 0) {
-            d3.select(this).transition()
-                .duration(450)
-                .attr("r", 16);
-        }
-    }
-
-    function mouseout() {
-        if (signForselect == 0) {
-            d3.select(this).transition()
-                .duration(450)
-                .attr("r", 10);
-        }
-    }
-
-    function click() {
-        if (signForselect == 0) {
-            d3.select(this).transition()
-                .duration(450)
-                .attr("r", 16);
-            signForselect = 1;
-        } else {
-            d3.select(this).transition()
-                .duration(450)
-                .attr("r", 10);
-            signForselect = 0;
-        }
     }
 </script>

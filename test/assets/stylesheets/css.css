@@ -7,7 +7,7 @@
 
 #graph1{
   width: 49%;
-  height: 90%;
+  height: 50%;
   float:right;
 }
 
@@ -21,4 +21,14 @@
 #brain3D{
   width: 40%;
   height: 40%;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
 }
