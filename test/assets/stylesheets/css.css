@@ -7,7 +7,7 @@
 
 #graph1{
   width: 49%;
-  height: 50%;
+  height: 100%;
   float:right;
 }
 
@@ -31,4 +31,17 @@
 .link {
   stroke: #999;
   stroke-opacity: .6;
+}
+
+d3-tip {
+    line-height: 1;
+    color: black;
+}
+
+h3 {
+    color: #1ABC9C;
+    text-align:center;
+    font-style: italic;
+    font-size: 14px;
+    font-family: "Helvetica";
 }
