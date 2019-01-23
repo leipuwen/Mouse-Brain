@@ -255,7 +255,7 @@
   var trace1 = {
     x: [],
     y: [],
-    mode: 'markers+lines',
+    mode: 'markers',
     type: 'scatter',
     name: 'Group A',
     // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
@@ -268,129 +268,68 @@
     }
   };
 
-  var trace2 = {
-    x: [],
-    y: [],
-    mode: 'markers+lines',
-    type: 'scatter',
-    name: 'Group B',
-    // text: ['B-a', 'B-b', 'B-c', 'B-d', 'B-e'],
-    textfont: {
-      family: 'Raleway, sans-serif'
+  var layout = {
+    autosize: true,
+    // images: [{
+    //   "source": "static/images/photo2.jpg",
+    //   "xref": "x",
+    //   "yref": "y",
+    //   "x": 0,
+    //   "y": 10,
+    //   "sizex": 10,
+    //   "sizey": 10,
+    //   "sizing": "stretch",
+    //   "opacity": 1,
+    //   "layer": "below"
+    //
+    // }],
+    margin: {
+      r: 10,
+      t: 20,
+      b: 0,
+      l: 10
     },
-    textposition: 'top center',
-    marker: {
-      size: 12
-    }
-  };
-
-  var trace3 = {
-    x: [],
-    y: [],
-    mode: 'markers+lines',
-    type: 'scatter',
-    name: 'Group C',
-    // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
-    textposition: 'top center',
-    textfont: {
-      family: 'Raleway, sans-serif'
+    xaxis: {
+      autotick: true,
+      showgrid: true,
+      gridwidth: 1,
+      showticklabels: true,
     },
-    marker: {
-      size: 12
-    }
-  };
-
-  var trace4 = {
-    x: [],
-    y: [],
-    mode: 'markers+lines',
-    type: 'scatter',
-    name: 'Group D',
-    // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
-    textposition: 'top center',
-    textfont: {
-      family: 'Raleway, sans-serif'
+    yaxis: {
+      autotick: true,
+      gridwidth: 1,
+      showgrid: true,
+      showticklabels: true,
     },
-    marker: {
-      size: 12
-    }
-  };
-
-  var trace5 = {
-    x: [],
-    y: [],
-    mode: 'markers+lines',
-    type: 'scatter',
-    name: 'Group E',
-    // text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
-    textposition: 'top center',
-    textfont: {
-      family: 'Raleway, sans-serif'
-    },
-    marker: {
-      size: 12
-    }
+    annotations: []
   };
 
   function buildFixedGraph() {
-
-    for (var i = 0; i < 3; i++) {
-      trace1.x[i] = 10 * Math.random();
-      trace1.y[i] = 10 * Math.random();
-      trace2.x[i] = 10 * Math.random();
-      trace2.y[i] = 10 * Math.random();
-      trace3.x[i] = 10 * Math.random();
-      trace3.y[i] = 10 * Math.random();
-      trace4.x[i] = 10 * Math.random();
-      trace4.y[i] = 10 * Math.random();
-      trace5.x[i] = 10 * Math.random();
-      trace5.y[i] = 10 * Math.random();
+    for (var i = 0; i < nodeData.length; i++) {
+      trace1.x[i] = nodeData[i].x;
+      trace1.y[i] = nodeData[i].y;
     }
-    var data = [trace1, trace2, trace3, trace4, trace5];
+    console.log(trace1);
 
-
-    var layout = {
-      autosize: true,
-      // images: [{
-      //   "source": "static/images/photo2.jpg",
-      //   "xref": "x",
-      //   "yref": "y",
-      //   "x": 0,
-      //   "y": 10,
-      //   "sizex": 10,
-      //   "sizey": 10,
-      //   "sizing": "stretch",
-      //   "opacity": 1,
-      //   "layer": "below"
-      //
-      // }],
-      margin: {
-        r: 10,
-        t: 20,
-        b: 0,
-        l: 10
-      },
-      xaxis: {
-        autotick: false,
-        showgrid: true,
-        gridwidth: 1,
-        showticklabels: false,
-      },
-      yaxis: {
-        autotick: false,
-        gridwidth: 1,
-        showgrid: true,
-        showticklabels: false,
-      }
-    };
-
-    Plotly.plot('sliceGraph', data, layout);
+    for (var j = 0; j < linkData.length; j++) {
+      layout.annotations.push({
+        axref: 'x',
+        aref: 'x',
+        ayref: 'y',
+        aref: 'y',
+        ax: nodeData[linkData[j].source].x,
+        x: nodeData[linkData[j].target].x,
+        ay: nodeData[linkData[j].source].y,
+        y: nodeData[linkData[j].target].y
+      });
+    }
+    console.log(layout.annotations);
+    Plotly.plot('sliceGraph', [trace1], layout);
   }
 </script>
 
 
 <script>
-
   function buildForceGraph() {
     //Constants for the SVG
     var width = 870,
@@ -406,8 +345,8 @@
 
     //Set up the force layout
     var force = d3.layout.force()
-      .charge(-120)
-      .linkDistance(80)
+      .charge(-70)
+      .linkDistance(30)
       .size([width, height]);
 
     //Read the data from the mis element
@@ -416,7 +355,7 @@
     graph.links = linkData;
     var graphRec = JSON.parse(JSON.stringify(graph));
 
-    console.log(graph,graphRec);
+    console.log(graph);
 
     //Creates the graph data structure out of the json data
     force.nodes(graph.nodes)
