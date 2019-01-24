@@ -145,7 +145,7 @@
         </div>
         <div id='network' class='panel-body'>
           <form>
-            <h3> Link threshold <input type="range" id="thersholdSlider" name="points" value=0 min="0" max="10" onchange="threshold(this.value)"> 0 - 10 </h3>
+            <h3> Link threshold <input type="range" id="thersholdSlider" name="points" value=0 min="0" max="1" step="0.1" onchange="forceGraph(this.value)"> 0.0 - 1.0 </h3>
           </form>
         </div>
       </div>
@@ -174,6 +174,7 @@
   var rABS = false;
   var nodeData;
   var linkData;
+  var forceGraph;
 
   function importfn(obj) { //导入
     nodeData = null;
@@ -247,7 +248,7 @@
   function buildGraph() {
     d3.select("svg").remove();
     buildFixedGraph();
-    buildForceGraph();
+    forceGraph = buildForceGraph(0);
   }
 </script>
 
@@ -270,19 +271,19 @@
 
   var layout = {
     autosize: true,
-    // images: [{
-    //   "source": "static/images/photo2.jpg",
-    //   "xref": "x",
-    //   "yref": "y",
-    //   "x": 0,
-    //   "y": 10,
-    //   "sizex": 10,
-    //   "sizey": 10,
-    //   "sizing": "stretch",
-    //   "opacity": 1,
-    //   "layer": "below"
-    //
-    // }],
+    images: [{
+      "source": "static/images/photo2.jpg",
+      "xref": "x",
+      "yref": "y",
+      "x": -1100,
+      "y": 750,
+      "sizex": 2200,
+      "sizey": 1500,
+      "sizing": "stretch",
+      "opacity": 1,
+      "layer": "below"
+
+    }],
     margin: {
       r: 10,
       t: 20,
@@ -304,12 +305,19 @@
     annotations: []
   };
 
+  var startColor = d3.rgb(0,0,255);
+  var endColor = d3.rgb(135,206,250);
+  var color = d3.interpolate(startColor, endColor);
+
+  var linear = d3.scale.linear()
+    .domain([0, 1])
+    .range([0, 1]);
+
   function buildFixedGraph() {
     for (var i = 0; i < nodeData.length; i++) {
       trace1.x[i] = nodeData[i].x;
       trace1.y[i] = nodeData[i].y;
     }
-    console.log(trace1);
 
     for (var j = 0; j < linkData.length; j++) {
       layout.annotations.push({
@@ -317,23 +325,23 @@
         aref: 'x',
         ayref: 'y',
         aref: 'y',
+        arrowcolor: color(linkData[j].value).toString(),
         ax: nodeData[linkData[j].source].x,
         x: nodeData[linkData[j].target].x,
         ay: nodeData[linkData[j].source].y,
         y: nodeData[linkData[j].target].y
       });
     }
-    console.log(layout.annotations);
     Plotly.plot('sliceGraph', [trace1], layout);
   }
 </script>
 
 
 <script>
-  function buildForceGraph() {
+  function buildForceGraph(thresh) {
     //Constants for the SVG
-    var width = 870,
-      height = 1000;
+    var width = 920,
+      height = 1100;
 
     //Set up the colour scale
     var color = d3.scale.category20();
@@ -345,17 +353,16 @@
 
     //Set up the force layout
     var force = d3.layout.force()
-      .charge(-70)
-      .linkDistance(30)
+      .charge(-60)
+      .linkDistance(40)
       .size([width, height]);
 
     //Read the data from the mis element
-    var graph = new Object()
+    var graph = new Object();
     graph.nodes = nodeData;
     graph.links = linkData;
     var graphRec = JSON.parse(JSON.stringify(graph));
 
-    console.log(graph);
 
     //Creates the graph data structure out of the json data
     force.nodes(graph.nodes)
@@ -410,16 +417,6 @@
       .style("stroke", "#4679BD")
       .style("opacity", "0.6");
 
-    //adjust threshold
-    function threshold(thresh) {
-      graph.links.splice(0, graph.links.length);
-      for (var i = 0; i < graphRec.links.length; i++) {
-        if (graphRec.links[i].value > thresh) {
-          graph.links.push(graphRec.links[i]);
-        }
-      }
-      restart();
-    }
     //Restart the visualisation after any node and link changes
     function restart() {
       link = link.data(graph.links);
@@ -491,6 +488,17 @@
         link.style("opacity", 1);
         toggle = 0;
       }
+    }
+
+    //adjust threshold
+    return function(thresh) {
+      graph.links.splice(0, graph.links.length);
+      for (var i = 0; i < graphRec.links.length; i++) {
+        if (graphRec.links[i].value >= thresh - 0.001) {
+          graph.links.push(graphRec.links[i]);
+        }
+      }
+      restart();
     }
   }
 </script>
